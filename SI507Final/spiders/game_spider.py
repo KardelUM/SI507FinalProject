@@ -1,4 +1,8 @@
 import hashlib
+import os
+import pickle
+
+import mysql.connector
 
 import scrapy
 
@@ -56,21 +60,44 @@ class AllGameSpider(scrapy.Spider):
             yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response, **kwargs):
-
         game_links = response.xpath(
             "//table[has-class('clamp-list')]/tr/td[has-class('clamp-summary-wrap')]/a[has-class('title')]/@href").getall()
         pageNum = response.xpath("//ul[has-class('pages')]/li[has-class('active_page')]/span/text()").get()
-        fl = open("log.txt", 'a')
-        fl.write("page: " + pageNum + ":\n")
-        for game_link in game_links:
-            fl.write(game_link + "\n")
-            yield response.follow(game_link, self.parse_game)
+        # fl.write("page: " + pageNum + ":\n")
 
-        fl.close()
-        # print("page:", pageNum)
-        # next_page = response.xpath(
-        #     "//ul[has-class('pages')]/li[has-class('active_page')]/following-sibling::li[1]/a/@href").get()
-        # yield response.follow(next_page, self.parse)
+        # if not os.path.exists("cache.pickle"):
+        #     f = open("cache.pickle", "xb")
+        #     f.close()
+        #     cache = []
+        # else:
+        #     with open("cache.pickle", 'rb') as f:
+        #         cache = pickle.load(f)
+        # for game_link in game_links:
+        #     if game_link not in cache:
+        #         cache.append(game_link)
+        #         yield response.follow(game_link, self.parse_game)
+        # with open("cache.pickle", 'wb') as f:
+        #     pickle.dump(cache, f)
+        summary_wraps = response.xpath("//table[has-class('clamp-list')]/tr/td[has-class('clamp-summary-wrap')]")
+        for summary_wrap in summary_wraps:
+            name = summary_wrap.xpath("a/h3/text()").get()
+            platform = summary_wrap.xpath(
+                "div[has-class('clamp-details')]/div[has-class('platform')]/span[has-class('data')]/text()").get().strip()
+            releaseDate = summary_wrap.xpath("div[has-class('clamp-details')]/span/text()").get().strip()
+            id = self.getId(name, platform, releaseDate)
+            conn = mysql.connector.connect(user="kardel", password="alksdj1029a", host="localhost", database="SI507")
+            cursor = conn.cursor()
+            cursor.execute(f"SELECT * FROM cache WHERE id='{id}'")
+            r = cursor.fetchone()
+            if r is None:
+                # there is not such a phrase in cache
+                print("Doesn't contains")
+                game_link = summary_wrap.xpath("a[has-class('title')]/@href").get()
+                yield response.follow(game_link, self.parse_game)
+                # insertion
+                cursor.execute(f"INSERT INTO cache (id) VALUES ('{id}')", )
+                conn.commit()
+            cursor.close()
 
     def parse_game(self, response):
         # region basic information: name, summary, platform, publishers, release date
@@ -154,8 +181,7 @@ class AllGameSpider(scrapy.Spider):
         if self.u_shape(user_positiveScore, user_mixedScore, user_negativeScore) or self.is_gap(userScore, metaScore):
 
             # use basic information of a game as id
-            id = hashlib.sha256(
-                (name + img_url + platform + summary + releaseDate + publishers).encode("utf-8")).hexdigest()
+            id = self.getId(name, platform, releaseDate)
 
             # region
             meta_review_link = response.xpath("//div[has-class('metascore_summary')]/div/a/@href").get()
@@ -207,6 +233,11 @@ class AllGameSpider(scrapy.Spider):
             yield game
         else:
             print("escape")
+
+    def getId(self, name, platform, releaseDate):
+        id = hashlib.sha256(
+            (name + platform + releaseDate).encode("utf-8")).hexdigest()
+        return id
 
     def parse_meta_review(self, response):
         """
