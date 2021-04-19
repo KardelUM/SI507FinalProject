@@ -6,6 +6,7 @@ class Game(scrapy.Item):
     platform = scrapy.Field()
     releaseDate = scrapy.Field()
     publisher = scrapy.Field()
+    img_url = scrapy.Field()
     userScore = scrapy.Field()
     metaScore = scrapy.Field()
     user_positive = scrapy.Field()
@@ -14,3 +15,4 @@ class Game(scrapy.Item):
     meta_positive = scrapy.Field()
     meta_mixed = scrapy.Field()
     meta_negative = scrapy.Field()
+

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<script src="https://d3js.org/d3.v4.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3.layout.cloud.js"></script>
+{#<script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3.layout.cloud.js"></script>#}
+{#<script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3.layout.cloud.js"></script>#}
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Business Frontpage - Start Bootstrap Template</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../static/index/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    {#    <script src="https://d3js.org/d3.v3.min.js"></script>#}
+    {#    <script src="d3.layout.cloud.js"></script>#}
+    <!-- Custom styles for this template -->
+    <link href="../static/index/css/business-frontpage.css" rel="stylesheet">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        // Load the Visualization API and the corechart package.
+        google.charts.load('current', {'packages': ['corechart']});
+        console.log("1");
+        // Set a callback to run when the Google Visualization API is loaded.
+        google.charts.setOnLoadCallback(drawChart);
+
+        // Callback that creates and populates a data table,
+        // instantiates the pie chart, passes in the data and
+        // draws it.
+        function drawChart() {
+            console.log("2");
+            // Create the data table.
+            var user_data = new google.visualization.DataTable();
+            user_data.addColumn('string', 'Topping');
+            user_data.addColumn('number', 'Slices');
+            user_data.addRows([
+                ['positve', {{ game.user_positive }}],
+                ['mixed', {{ game.user_mixed }}],
+                ['negative', {{ game.user_negative }}],
+            ]);
+            console.log({{ game.user_positive }});
+            console.log({{ game.user_mixed }});
+            console.log({{ game.user_negative }});
+            var meta_data = new google.visualization.DataTable();
+            meta_data.addColumn('string', 'Topping');
+            meta_data.addColumn('number', 'Slices');
+            meta_data.addRows([
+                ['positve', {{ game.meta_positive }}],
+                ['mixed', {{ game.meta_mixed }}],
+                ['negative', {{ game.meta_negative }}],
+            ]);
+            console.log({{ game.meta_positive }});
+            console.log({{ game.meta_mixed }});
+            console.log({{ game.meta_negative }});
+            console.log(meta_data);
+
+            // Set chart options
+            var user_options = {
+                'title': 'Users\' Reviews About {{ game.name }}',
+                'width': 300,
+                'height': 300,
+                is3D: true,
+                slices: {
+                    0: {color: '#32CD32'},
+                    1: {color: 'yellow'},
+                    2: {color: 'red'}
+                }
+            };
+            console.log(user_options);
+
+            var meta_options = {
+                'title': 'medias\' Reviews About {{ game.name }}',
+                'width': 300,
+                'height': 300,
+                is3D: true,
+                slices: {
+                    0: {color: '#32CD32'},
+                    1: {color: 'yellow'},
+                    2: {color: 'red'}
+                }
+            };
+            console.log(meta_options);
+            // Instantiate and draw our chart, passing in some options.
+            var user_chart = new google.visualization.PieChart(document.getElementById('user-pie-chart'));
+            console.log(document.getElementById('user-pie-chart'));
+            console.log(document.getElementById('meta-pie-chart'));
+            var meta_chart = new google.visualization.PieChart(document.getElementById('meta-pie-chart'));
+            user_chart.draw(user_data, user_options);
+            meta_chart.draw(meta_data, meta_options);
+            console.log("user_chart:");
+            console.log(user_chart);
+            console.log("meta_chart:");
+            console.log(meta_chart);
+
+
+            var data = google.visualization.arrayToDataTable([
+                ['Element', 'score', {role: 'style'}],
+                ['user score', {{ game.userScore * 10 }}, 'orange'],
+                ['media score', {{ game.metaScore }}, 'brown'],
+            ]);
+
+            var options = {
+                title: 'User&Media Score comaprison',
+                chartArea: {width: '50%'},
+                hAxis: {
+                    title: 'average Score',
+                    minValue: 0
+                },
+                vAxis: {
+                    title: ''
+                }
+            };
+
+            var chart = new google.visualization.BarChart(document.getElementById('media_vs_users'));
+
+            chart.draw(data, options);
+
+
+        }
+    </script>
+</head>
+
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">Controversial Game Builletin board</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Services</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Contact</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Header -->
+<header class="bg-primary py-5 mb-5">
+    <div class="container h-100">
+        <div class="row h-100 align-items-center">
+            <div class="col-lg-12">
+                <h1 class="display-4 text-white mt-5 mb-2">{{ game.name }}</h1>
+                <p class="lead mb-5 text-white-50">This is a website for visualize controversial games</p>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Page Content -->
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-8 mb-5">
+            <h2>Description</h2>
+            <hr>
+            <!--{#          todo: Ushape redirect#}-->
+            {{ game.content }}
+            {#        <p>We use <a href="https://www.metacritic.com/">Metacritic</a> and <a href="https://www.vgchartz.com/">VGChartz</a> to collect game review data and determine whether reviews of a game are in <a href="">U shape</a> or whether there is a large gap between user's review score and media's review score.</p>#}
+            {#        <p> <b>Dependent Technology: </b> Server Deployment: Flask; Crawler Deployment: Scrapy; Dataset Deployment: Mysql; Visualization Technology: Google Chart </p>#}
+            {#        <a class="btn btn-primary btn-lg" href="#">Call to Action &raquo;</a>#}
+        </div>
+        <div class="col-md-4 mb-5">
+            <h2>Basic Information</h2>
+            <hr>
+            <ul>
+                <li>platform: {{ game.platform }}</li>
+                <li>releaseDate: {{ game.releaseDate }}</li>
+                <li>publisher: {{ game.publisher }}</li>
+            </ul>
+            {#            <address>#}
+            {#                <strong>Kadel</strong>#}
+            {#                <br>3869 CheryL ct.#}
+            {#                <br>Aurora, IL 60504#}
+            {#                <br>#}
+            {#            </address>#}
+            {#            <address>#}
+            {#                <abbr title="Phone">P:</abbr>#}
+            {#                (331) 385-4914#}
+            {#                <br>#}
+            {#                <abbr title="Email">E:</abbr>#}
+            {#                <a href="mailto:#">kardel@umich.edu</a>#}
+            {#            </address>#}
+        </div>
+    </div>
+    <!-- /.row -->
+
+    <div class="row">
+        <div class="col-md-4 mb-5">
+            <div class="card h-100">
+                <img class="card-img-top" src="https://placehold.it/300x200" alt="">
+                <div class="card-body" id="user-pie-chart">
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="btn btn-primary">Find Out More!</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-5">
+            <div class="card h-100">
+                <img class="card-img-top" src="https://placehold.it/300x200" alt="">
+                <div class="card-body" id="meta-pie-chart">
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="btn btn-primary">Find Out More!</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-5">
+            <div class="card h-100">
+                <img class="card-img-top" src="https://placehold.it/300x200" alt="">
+                <div class="card-body" id="media_vs_users">
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="btn btn-primary">Find Out More!</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <img src="data:image/png;base64, {{ wordcloud }}">
+
+    </div>
+
+<!-- /.container -->
+
+<!-- Footer -->
+<footer class="py-5 bg-dark">
+    <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; Your Website 2020</p>
+    </div>
+    <!-- /.container -->
+</footer>
+
+<!-- Bootstrap core JavaScript -->
+<script src="../static/index/vendor/jquery/jquery.min.js"></script>
+<script src="../static/index/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
