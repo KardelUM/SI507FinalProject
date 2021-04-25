@@ -1,6 +1,6 @@
 # README
 
-	## Introduction
+## Introduction
 
 This project is a Flask& MySQL-based project to represents controversial games on [Metacritic](https://www.metacritic.com/)
 
