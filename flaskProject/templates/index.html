@@ -3,192 +3,222 @@
 
 <head>
 
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-  <title>Business Frontpage - Start Bootstrap Template</title>
+    <title>Business Frontpage - Start Bootstrap Template</title>
+    <!--add google jquery API-->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="{{url_for('static', filename='jquery.js') }}">\x3C/script>')</script>
+    <!-- Bootstrap core CSS -->
+    <link href="static/index/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-  <!-- Bootstrap core CSS -->
-  <link href="static/index/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-  <!-- Custom styles for this template -->
-  <link href="static/index/css/business-frontpage.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="static/index/css/business-frontpage.css" rel="stylesheet">
+    <script>
+        let start_index = 1;
+        let num = 12;
 
+        function load_more_ajax() {
+            ajax_data = JSON.stringify({"start_index": start_index + num});
+            console.log(ajax_data);
+
+            $.ajax({
+                type: "POST",
+                url: "{{ url_for('index') }}",
+                {#data: JSON.stringify(ajax_data),#}
+                data: ajax_data,
+                {#data: {"start_index": start_index += num},#}
+                success: function (games) {
+                    start_index += num;
+                    console.log("success");
+                    {#console.log(games);#}
+                    for (const gameKey in games) {
+                        let game = games[gameKey];
+                        let content = game.content;
+                        if (content.length >= 250) {
+                            content = content.substring(0, 247) + "...";
+                        }
+                        let divHTML = `            <div class="col-md-4 mb-5">
+                <div class="card h-100">
+                    <img class="card-img-top" src="https://placehold.it/300x200" alt="">
+                    <div class="card-body">
+                        <h4 class="card-title">` + game.name + `</h4>
+
+                            <p class="card-text">` + content + `</p>
+
+                    </div>
+                    <div class="card-footer">
+                        <a href="/game_detail/` + game.id + `" class="btn btn-primary">Find Out More!</a>
+                    </div>
+                </div>
+            </div>
+`;
+                        console.log(divHTML);
+                        $("#cellsRow").append(divHTML);
+
+                    }
+                }
+            })
+
+        }
+        function scrapy_running_ajax(){
+
+        }
+    </script>
 </head>
 
 <body>
 
-  <!-- Navigation -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container">
-      <a class="navbar-brand" href="#">Controversial Game Builletin board</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarResponsive">
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="#">Home
-              <span class="sr-only">(current)</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">About</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Services</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Contact</a>
-          </li>
-        </ul>
-      </div>
+        <a class="navbar-brand" href="#">Controversial Game Builletin board</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Services</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Contact</a>
+                </li>
+            </ul>
+        </div>
     </div>
-  </nav>
+</nav>
 
-  <!-- Header -->
-  <header class="bg-primary py-5 mb-5">
+<!-- Header -->
+<header class="bg-primary py-5 mb-5">
     <div class="container h-100">
-      <div class="row h-100 align-items-center">
-        <div class="col-lg-12">
-          <h1 class="display-4 text-white mt-5 mb-2">Controversial Games Bulletin board</h1>
-          <p class="lead mb-5 text-white-50">This is a website for visualize controversial games</p>
+        <div class="row h-100 align-items-center">
+            <div class="col-lg-12">
+                <h1 class="display-4 text-white mt-5 mb-2">Controversial Games Bulletin board</h1>
+                <p class="lead mb-5 text-white-50">This is a website for visualize controversial games</p>
+            </div>
         </div>
-      </div>
     </div>
-  </header>
+</header>
 
-  <!-- Page Content -->
-  <div class="container">
+<!-- Page Content -->
+<div class="container">
 
     <div class="row">
-      <div class="col-md-8 mb-5">
-        <h2>What We Do</h2>
-        <hr>
-<!--{#          todo: Ushape redirect#}-->
-        <p>We use <a href="https://www.metacritic.com/">Metacritic</a> and <a href="https://www.vgchartz.com/">VGChartz</a> to collect game review data and determine whether reviews of a game are in <a href="">U shape</a> or whether there is a large gap between user's review score and media's review score.</p>
-        <p> <b>Dependent Technology: </b> Server Deployment: Flask; Crawler Deployment: Scrapy; Dataset Deployment: Mysql; Visualization Technology: Google Chart </p>
-{#        <a class="btn btn-primary btn-lg" href="#">Call to Action &raquo;</a>#}
-      </div>
-      <div class="col-md-4 mb-5">
-        <h2>Contact Us</h2>
-        <hr>
-        <address>
-          <strong>Kadel</strong>
-          <br>3869 CheryL ct.
-          <br>Aurora, IL 60504
-          <br>
-        </address>
-        <address>
-          <abbr title="Phone">P:</abbr>
-          (331) 385-4914
-          <br>
-          <abbr title="Email">E:</abbr>
-          <a href="mailto:#">kardel@umich.edu</a>
-        </address>
-      </div>
+        <div class="col-md-8 mb-5">
+            <h2>What We Do</h2>
+            <hr>
+            <!--{#          todo: Ushape redirect#}-->
+            <p>We use <a href="https://www.metacritic.com/">Metacritic</a> and <a href="https://www.vgchartz.com/">VGChartz</a>
+                to collect game review data and determine whether reviews of a game are in <a href="">U shape</a> or
+                whether there is a large gap between user's review score and media's review score.</p>
+            <p><b>Dependent Technology: </b> Server Deployment: Flask; Crawler Deployment: Scrapy; Dataset Deployment:
+                Mysql; Visualization Technology: Google Chart </p>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#scrapyModal">Scraping Window
+            </button>
+            <div class="modal fade" id="scrapyModal" tabindex="-1" role="dialog"
+                 aria-labelledby="scrapyModalTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Scrapy Setting</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form class="scrapy-setting">
+                                <div class="mb-3">
+                                    <label for="end-index" class="form-label">start index</label>
+                                    <input type="number" class="form-control" id="start-index">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="start-index" class="form-label">end index</label>
+                                    <input type="number" class="form-control" id="end-index">
+                                </div>
+                            </form>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="scrapy_running_ajax()">Start</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            {#        <a class="btn btn-primary btn-lg" href="#">Call to Action &raquo;</a>#}
+        </div>
+        <div class="col-md-4 mb-5">
+            <h2>Contact Us</h2>
+            <hr>
+            <address>
+                <strong>Kadel</strong>
+                <br>3869 CheryL ct.
+                <br>Aurora, IL 60504
+                <br>
+            </address>
+            <address>
+                <abbr title="Phone">P:</abbr>
+                (331) 385-4914
+                <br>
+                <abbr title="Email">E:</abbr>
+                <a href="mailto:#">kardel@umich.edu</a>
+            </address>
+        </div>
     </div>
     <!-- /.row -->
 
-    <div class="row">
+    <div class="row" id="cellsRow">
         {% for game in games %}
-              <div class="col-md-4 mb-5">
-        <div class="card h-100">
-          <img class="card-img-top" src="https://placehold.it/300x200" alt="">
-          <div class="card-body">
-            <h4 class="card-title">{{ game.name }}</h4>
-              {% if game.content|length >= 250%}
-{#                  {{ game.content|length }}#}
-                  <p class="card-text">{{ game.content[:247] }} ...</p>
-              {% endif %}
-          </div>
-          <div class="card-footer">
-            <a href="/game_detail/{{ game.id }}" class="btn btn-primary">Find Out More!</a>
-          </div>
-        </div>
-      </div>
-
+            <div class="col-md-4 mb-5">
+                <div class="card h-100">
+                    <img class="card-img-top" src="https://placehold.it/300x200" alt="">
+                    <div class="card-body">
+                        <h4 class="card-title">{{ game.name }}</h4>
+                        {% if game.content|length >= 250 %}
+                            {#                  {{ game.content|length }}#}
+                            <p class="card-text">{{ game.content[:247] }} ...</p>
+                        {% else %}
+                            <p class="card-text">{{ game.content }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="card-footer">
+                        <a href="/game_detail/{{ game.id }}" class="btn btn-primary">Find Out More!</a>
+                    </div>
+                </div>
+            </div>
         {% endfor %}
-
-{#      <div class="col-md-4 mb-5">#}
-{#        <div class="card h-100">#}
-{#          <img class="card-img-top" src="https://placehold.it/300x200" alt="">#}
-{#          <div class="card-body">#}
-{#            <h4 class="card-title">Card title</h4>#}
-{#            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente esse necessitatibus neque sequi doloribus totam ut praesentium aut.</p>#}
-{#          </div>#}
-{#          <div class="card-footer">#}
-{#            <a href="#" class="btn btn-primary">Find Out More!</a>#}
-{#          </div>#}
-{#        </div>#}
-{#      </div>#}
-{#      <div class="col-md-4 mb-5">#}
-{#        <div class="card h-100">#}
-{#          <img class="card-img-top" src="https://placehold.it/300x200" alt="">#}
-{#          <div class="card-body">#}
-{#            <h4 class="card-title">Card title</h4>#}
-{#            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente esse necessitatibus neque sequi doloribus totam ut praesentium aut.</p>#}
-{#          </div>#}
-{#          <div class="card-footer">#}
-{#            <a href="#" class="btn btn-primary">Find Out More!</a>#}
-{#          </div>#}
-{#        </div>#}
-{#      </div>#}
-{#      <div class="col-md-4 mb-5">#}
-{#        <div class="card h-100">#}
-{#          <img class="card-img-top" src="https://placehold.it/300x200" alt="">#}
-{#          <div class="card-body">#}
-{#            <h4 class="card-title">Card title</h4>#}
-{#            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente esse necessitatibus neque sequi doloribus totam ut praesentium aut.</p>#}
-{#          </div>#}
-{#          <div class="card-footer">#}
-{#            <a href="#" class="btn btn-primary">Find Out More!</a>#}
-{#          </div>#}
-{#        </div>#}
-{#      </div>#}
-{#        <div class="col-md-4 mb-5">#}
-{#        <div class="card h-100">#}
-{#          <img class="card-img-top" src="https://placehold.it/300x200" alt="">#}
-{#          <div class="card-body">#}
-{#            <h4 class="card-title">Card title</h4>#}
-{#            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente esse necessitatibus neque sequi doloribus totam ut praesentium aut.</p>#}
-{#          </div>#}
-{#          <div class="card-footer">#}
-{#            <a href="#" class="btn btn-primary">Find Out More!</a>#}
-{#          </div>#}
-{#        </div>#}
-{#      </div>#}
-{#      <div class="col-md-4 mb-5">#}
-{#        <div class="card h-100">#}
-{#          <img class="card-img-top" src="https://placehold.it/300x200" alt="">#}
-{#          <div class="card-body">#}
-{#            <h4 class="card-title">Card title</h4>#}
-{#            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente esse necessitatibus neque.</p>#}
-{#          </div>#}
-{#          <div class="card-footer">#}
-{#            <a href="#" class="btn btn-primary">Find Out More!</a>#}
-{#          </div>#}
-{#        </div>#}
-{#      </div>#}
-{#    </div>#}
-    <!-- /.row -->
-
-  </div>
-  <!-- /.container -->
-
-  <!-- Footer -->
-  <footer class="py-5 bg-dark">
-    <div class="container">
-      <p class="m-0 text-center text-white">Copyright &copy; Your Website 2020</p>
     </div>
-    <!-- /.container -->
-  </footer>
+    <button type="button" class="btn btn-outline-dark btn-lg btn-block" onclick="load_more_ajax()">Load More!</button>
 
-  <!-- Bootstrap core JavaScript -->
-  <script src="static/index/vendor/jquery/jquery.min.js"></script>
-  <script src="static/index/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- /.container -->
+
+    <!-- Footer -->
+    <footer class="py-5 bg-dark">
+        <div class="container">
+            <p class="m-0 text-center text-white">Copyright &copy; Your Website 2020</p>
+        </div>
+        <!-- /.container -->
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="static/index/vendor/jquery/jquery.min.js"></script>
+    <script src="static/index/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 </body>
 

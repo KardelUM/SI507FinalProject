@@ -2,15 +2,22 @@ import base64
 import json
 import re
 import urllib
+from flask_restful import reqparse
 
 import nltk
 from wordcloud import WordCloud
 
 nltk.download('stopwords')
 from utils.mysql_er import MySQLConnector
-from flask import Flask, render_template
+from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
+
+def parse_arg_from_requests(arg, **kwargs):
+    parse = reqparse.RequestParser()
+    parse.add_argument(arg, **kwargs)
+    args = parse.parse_args()
+    return args[arg]
 
 
 def get_stop_words():
@@ -24,12 +31,23 @@ def get_stop_words():
     sw_list = swlist_r.strip().split("\r\n")
     return sw_list
 
-@app.route('/', methods=['GET'])
+@app.route('/', methods=['GET', "POST"])
 def index():
-    connector = MySQLConnector()
-    games = connector.get_games(1, 13)
-    connector.close()
-    return render_template('index.html', games=games)
+    if request.method == 'GET':
+        connector = MySQLConnector()
+        games = connector.get_games(1, 13)
+        connector.close()
+        return render_template('index.html', games=games)
+    elif request.method =='POST':
+        # AJAX PART
+        print("post!")
+
+        start_page = json.loads(request.get_data().decode("utf-8"))["start_index"]
+        connector = MySQLConnector()
+        games = connector.get_games(start_page, 13)
+
+        connector.close()
+        return jsonify(games)
 
 
 @app.route("/game_detail/<id>", methods=["GET"])
