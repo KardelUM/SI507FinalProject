@@ -1,8 +1,4 @@
 import hashlib
-import os
-import pickle
-
-import mysql.connector
 
 import scrapy
 

@@ -2,14 +2,12 @@ import base64
 import json
 import re
 import urllib
-from flask_restful import reqparse
 
-import nltk
+from flask import Flask, render_template, request, jsonify
+from flask_restful import reqparse
 from wordcloud import WordCloud
 
-nltk.download('stopwords')
 from utils.mysql_er import MySQLConnector
-from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
 
