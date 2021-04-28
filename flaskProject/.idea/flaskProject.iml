@@ -15,6 +15,9 @@
     <orderEntry type="library" name="d3.v3" level="application" />
     <orderEntry type="library" name="d3.v4" level="application" />
     <orderEntry type="library" name="d3.layout.cloud" level="application" />
+    <orderEntry type="library" name="d3.v6" level="application" />
+    <orderEntry type="library" name="gsap" level="application" />
+    <orderEntry type="library" name="@popperjs" level="application" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Jinja2" />

@@ -4,9 +4,10 @@
 <head>
 <script src="https://d3js.org/d3.v4.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3.layout.cloud.js"></script>
-{#<script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3.layout.cloud.js"></script>#}
-{#<script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3.layout.cloud.js"></script>#}
-
+<script src="https://d3js.org/d3.v6.min.js"></script>
+<script src="https://unpkg.com/@popperjs/core@2"></script>
+<script src="../static/popper.min.js"></script>
+<script src="../static/d3-waffle.js"></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
@@ -42,9 +43,7 @@
                 ['mixed', {{ game.user_mixed }}],
                 ['negative', {{ game.user_negative }}],
             ]);
-            console.log({{ game.user_positive }});
-            console.log({{ game.user_mixed }});
-            console.log({{ game.user_negative }});
+
             var meta_data = new google.visualization.DataTable();
             meta_data.addColumn('string', 'Topping');
             meta_data.addColumn('number', 'Slices');
@@ -53,10 +52,8 @@
                 ['mixed', {{ game.meta_mixed }}],
                 ['negative', {{ game.meta_negative }}],
             ]);
-            console.log({{ game.meta_positive }});
-            console.log({{ game.meta_mixed }});
-            console.log({{ game.meta_negative }});
-            console.log(meta_data);
+
+
 
             // Set chart options
             var user_options = {
@@ -86,8 +83,6 @@
             console.log(meta_options);
             // Instantiate and draw our chart, passing in some options.
             var user_chart = new google.visualization.PieChart(document.getElementById('user-pie-chart'));
-            console.log(document.getElementById('user-pie-chart'));
-            console.log(document.getElementById('meta-pie-chart'));
             var meta_chart = new google.visualization.PieChart(document.getElementById('meta-pie-chart'));
             user_chart.draw(user_data, user_options);
             meta_chart.draw(meta_data, meta_options);
@@ -119,8 +114,9 @@
             };
 
             var chart = new google.visualization.BarChart(document.getElementById('media_vs_users'));
-
             chart.draw(data, options);
+
+
 
 
         }
@@ -191,19 +187,6 @@
                 <li>releaseDate: {{ game.releaseDate }}</li>
                 <li>publisher: {{ game.publisher }}</li>
             </ul>
-            {#            <address>#}
-            {#                <strong>Kadel</strong>#}
-            {#                <br>3869 CheryL ct.#}
-            {#                <br>Aurora, IL 60504#}
-            {#                <br>#}
-            {#            </address>#}
-            {#            <address>#}
-            {#                <abbr title="Phone">P:</abbr>#}
-            {#                (331) 385-4914#}
-            {#                <br>#}
-            {#                <abbr title="Email">E:</abbr>#}
-            {#                <a href="mailto:#">kardel@umich.edu</a>#}
-            {#            </address>#}
         </div>
     </div>
     <!-- /.row -->
@@ -215,7 +198,7 @@
                 <div class="card-body" id="user-pie-chart">
                 </div>
                 <div class="card-footer">
-                    <a href="#" class="btn btn-primary">Find Out More!</a>
+{#                    <a href="#" class="btn btn-primary">Find Out More!</a>#}
                 </div>
             </div>
         </div>
@@ -225,7 +208,7 @@
                 <div class="card-body" id="meta-pie-chart">
                 </div>
                 <div class="card-footer">
-                    <a href="#" class="btn btn-primary">Find Out More!</a>
+{#                    <a href="#" class="btn btn-primary">Find Out More!</a>#}
                 </div>
             </div>
         </div>
@@ -235,16 +218,48 @@
                 <div class="card-body" id="media_vs_users">
                 </div>
                 <div class="card-footer">
-                    <a href="#" class="btn btn-primary">Find Out More!</a>
+{#                    <a href="#" class="btn btn-primary">Find Out More!</a>#}
                 </div>
             </div>
         </div>
     </div>
-    <div class="row">
-        <img src="data:image/png;base64, {{ wordcloud }}">
+     <div class="row">
+        <div class="col">
+            <div class="card h-100">
+                <img class="card-img-top" src="https://placehold.it/300x200" alt="">
+                <div class="card-body" >
+                    <span>meta WordCloud</span>
+                </div>
+                <div class="card-footer" id="user-review-stack-chart">
+                            <img src="data:image/png;base64, {{ meta_wordcloud }}">
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100">
+                <img class="card-img-top" src="https://placehold.it/300x200" alt="">
+                <div class="card-body" >
+                    <span>User WordCloud</span>
+                </div>
+                <div class="card-footer" id="user-review-stack-chart">
+                            <img src="data:image/png;base64, {{ users_wordcloud }}" data-toggle="popover" data-content="Disabled popover"  data-trigger="hover">
+                </div>
+            </div>
+        </div>
 
     </div>
+    <div class="row">
 
+    </div>
+    <h2>Hot words</h2>
+
+    {% if hotwords|length != 0 %}
+        <ul>
+        {% for hotword in hotwords %}
+            <li>{{ hotword }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
 <!-- /.container -->
 
 <!-- Footer -->
