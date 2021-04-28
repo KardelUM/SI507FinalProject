@@ -1,9 +1,6 @@
 import hashlib
-import os
-import pickle
 
 import mysql.connector
-
 import scrapy
 
 from SI507Final.items import gameItem, reviewItem

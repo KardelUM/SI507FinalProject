@@ -1,3 +1,6 @@
 /.idea
 /__pycache__
 /venv
+/logs
+/flaskProject/.idea
+/flaskProject/__pycache__

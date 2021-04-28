@@ -5,15 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="17b3aa3d-a8e8-407f-a728-f98d6ced0633" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/flaskProject/static/d3-waffle.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flaskProject/static/popper.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/run.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flaskProject/.idea/flaskProject.iml" beforeDir="false" afterPath="$PROJECT_DIR$/flaskProject/.idea/flaskProject.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flaskProject/.idea/jsLibraryMappings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/flaskProject/.idea/jsLibraryMappings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flaskProject/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/flaskProject/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SI507Final/spiders/game_spider.py" beforeDir="false" afterPath="$PROJECT_DIR$/SI507Final/spiders/game_spider.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cache.pickle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flaskProject/log.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flaskProject/static/games.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flaskProject/static/reviews.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/flaskProject/temp.png" beforeDir="false" afterPath="$PROJECT_DIR$/flaskProject/temp.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flaskProject/templates/game_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/flaskProject/templates/game_detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flaskProject/test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/log.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tlou.jl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tlou.json" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -178,10 +181,10 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Flask server.Flask (flaskProject/app.py)" />
       <item itemvalue="Python.game_spider" />
       <item itemvalue="Python.game_test" />
       <item itemvalue="Python.test" />
-      <item itemvalue="Flask server.Flask (flaskProject/app.py)" />
       <item itemvalue="Python.run" />
     </list>
     <recent_temporary>
@@ -225,6 +228,8 @@
       <workItem from="1619459534514" duration="1077000" />
       <workItem from="1619588867382" duration="11725000" />
       <workItem from="1619624077873" duration="5391000" />
+      <workItem from="1619640008553" duration="2912000" />
+      <workItem from="1619648653602" duration="327000" />
     </task>
     <servers />
   </component>
