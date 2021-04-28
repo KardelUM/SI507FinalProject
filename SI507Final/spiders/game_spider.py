@@ -12,7 +12,7 @@ from SI507Final.items import gameItem, reviewItem
 class AllGameSpider(scrapy.Spider):
     name = "all_games"
 
-    def __init__(self, start_page, end_page, **kwargs):
+    def __init__(self, start_page=1, end_page=12, **kwargs):
         super().__init__(**kwargs)
         self.urls = []
         start_page = int(start_page)
@@ -20,7 +20,9 @@ class AllGameSpider(scrapy.Spider):
         # [start_page, end_page]
         for i in range(start_page, end_page + 1):
             self.urls.append("https://www.metacritic.com/browse/games/score/userscore/all/filtered?page=" + str(i - 1))
-
+    def start_requests(self):
+        for url in self.urls:
+            yield scrapy.Request(url=url, callback=self.parse)
     def is_gap(self, userScore, metaScore):
         "https://www.metacritic.com/about-metascores"
         userScore = float(userScore)
@@ -54,10 +56,6 @@ class AllGameSpider(scrapy.Spider):
         else:
             return False
 
-    def start_requests(self):
-
-        for url in self.urls:
-            yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response, **kwargs):
         game_links = response.xpath(

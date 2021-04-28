@@ -96,13 +96,16 @@
             console.log("meta_chart:");
             console.log(meta_chart);
 
+            let userScore = JSON.parse({{ game.userScore| tojson}});
+            let metaScore = JSON.parse({{ game.metaScore|tojson }});
+            console.log(userScore, metaScore);
 
             var data = google.visualization.arrayToDataTable([
                 ['Element', 'score', {role: 'style'}],
-                ['user score', {{ game.userScore * 10 }}, 'orange'],
-                ['media score', {{ game.metaScore }}, 'brown'],
+                ['user score', userScore, 'orange'],
+                ['media score', metaScore, 'brown'],
             ]);
-
+            console.log({{ game.metaScore }});
             var options = {
                 title: 'User&Media Score comaprison',
                 chartArea: {width: '50%'},

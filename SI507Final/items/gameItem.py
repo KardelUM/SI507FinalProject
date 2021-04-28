@@ -15,4 +15,4 @@ class Game(scrapy.Item):
     meta_positive = scrapy.Field()
     meta_mixed = scrapy.Field()
     meta_negative = scrapy.Field()
-
+    link = scrapy.Field()

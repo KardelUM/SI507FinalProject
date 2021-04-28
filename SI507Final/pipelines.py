@@ -39,3 +39,12 @@ class Si507FinalPipeline:
         cursor.execute(create_query, row)
         self.conn.commit()
         cursor.close()
+
+
+class SelectiveSpiderPipelines:
+    def __init__(self):
+        pass
+    def open_spider(self, spider):
+        print("spider open!")
+    def process_item(self, item, spider):
+        return item
