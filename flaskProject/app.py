@@ -1,5 +1,6 @@
 import base64
 import json
+import os
 import re
 import urllib
 
@@ -59,13 +60,31 @@ def index2():
         # AJAX PART
         print("post!")
         page_index = json.loads(request.get_data().decode("utf-8"))["page_index"]
-        with urllib.request.urlopen(
-                "http://localhost:9080/crawl.json?spider_name=game-spider-main-game&url=https://www.metacritic.com/browse/games/score/userscore/all/filtered?page=" + str(
-                    page_index)) as res:
-            s = res.read()
-        games = json.loads(s)
-        print(len(games))
-        return jsonify(games)
+
+        if not os.path.exists(os.path.join(os.getcwd(), "cache2")):
+            print("created!")
+            os.mkdir(os.path.join(os.getcwd(), "cache2"))
+
+        if not os.path.exists(os.path.join(os.getcwd(), "cache2", str(page_index))):
+            os.mkdir(os.path.join(os.getcwd(), "cache2", str(page_index)))
+
+            with urllib.request.urlopen(
+                    "http://localhost:9080/crawl.json?spider_name=game-spider-main-game&url=https://www.metacritic.com/browse/games/score/userscore/all/filtered?page=" + str(
+                        page_index)) as res:
+                s = res.read()
+            games = json.loads(s)
+
+            print(len(games))
+            s = json.dumps(games)
+            with open(os.path.join(os.getcwd(), "cache2", str(page_index), "games.json"), 'w+') as gamesJson:
+                gamesJson.write(s)
+
+            return jsonify(games)
+        else:
+            with open(os.path.join(os.getcwd(), "cache2", str(page_index), "games.json"), 'r') as gamesJson:
+                s = gamesJson.read()
+            games = json.loads(s)
+            return jsonify(games)
 
 
 def generateWCfromReviews(reviews, game):
@@ -129,53 +148,78 @@ def game_detail(id):
 @app.route("/game_detail2/<url>", methods=["GET"])
 def game_detail2(url):
     words_frequency = {}
+    original_url = url.split("/")[-1]
     url = url.replace("|", "/")
     print("url:", url)
-    with urllib.request.urlopen("http://localhost:9080/crawl.json?spider_name=game-detailed-spider&url=" + url) as res:
-        s = res.read()
-    jsobj = json.loads(s)
-    reviews = []
-    game = {}
-    if jsobj["status"] == "ok":
-        for item in jsobj["items"]:
-            if "id" in item:
-                game["content"] = item["summary"]
-                game["name"] = item["name"]
-                game["platform"] = item["platform"]
-                game["releaseDate"] = item["releaseDate"]
-                game["publisher"] = item["publisher"]
+    print("url:", original_url)
+    if not os.path.exists(os.path.join(os.getcwd(), "cache2", "reviews")):
+        os.mkdir(os.path.join(os.getcwd(), "cache2", "reviews"))
+    if not os.path.exists(os.path.join(os.getcwd(), "cache2", "reviews", original_url + ".json")):
+        with urllib.request.urlopen(
+                "http://localhost:9080/crawl.json?spider_name=game-detailed-spider&url=" + url) as res:
+            s = res.read()
+        jsobj = json.loads(s)
+        reviews = []
+        game = {}
+        if jsobj["status"] == "ok":
+            for item in jsobj["items"]:
+                if "id" in item:
+                    game["content"] = item["summary"]
+                    game["name"] = item["name"]
+                    game["platform"] = item["platform"]
+                    game["releaseDate"] = item["releaseDate"]
+                    game["publisher"] = item["publisher"]
 
-                print("hello", item["userScore"] * 10)
-                game["userScore"] = int(float(item["userScore"]) * 10)
-                game["metaScore"] = int(item["metaScore"])
-                game["user_positive"] = item["user_positive"]
-                game["user_mixed"] = item["user_mixed"]
-                game["user_negative"] = item["user_negative"]
-                game["meta_positive"] = item["meta_positive"]
-                game["meta_mixed"] = item["meta_mixed"]
-                game["meta_negative"] = item["meta_negative"]
+                    print("hello", item["userScore"] * 10)
+                    game["userScore"] = int(float(item["userScore"]) * 10)
+                    game["metaScore"] = int(item["metaScore"])
+                    game["user_positive"] = item["user_positive"]
+                    game["user_mixed"] = item["user_mixed"]
+                    game["user_negative"] = item["user_negative"]
+                    game["meta_positive"] = item["meta_positive"]
+                    game["meta_mixed"] = item["meta_mixed"]
+                    game["meta_negative"] = item["meta_negative"]
+                else:
+                    reviews.append(item)
+
+        meta_reviews = []
+        users_reviews = []
+        for review in reviews:
+            if review["type"] == "meta":
+                meta_reviews.append(review)
             else:
-                reviews.append(item)
+                users_reviews.append(review)
+        meta_encoded_string, meta_words_frequency = generateWCfromReviews(meta_reviews, game)
+        users_encoded_string, users_words_frequency = generateWCfromReviews(users_reviews, game)
+        # print(encoded_string)
+        metaHotwords = sorted(meta_words_frequency, key=meta_words_frequency.get, reverse=True)[:5]
+        usersHotwords = sorted(users_words_frequency, key=users_words_frequency.get, reverse=True)[:5]
+        hotWordsIntersection = list(set(usersHotwords) & set(metaHotwords))
+        print(meta_words_frequency)
+        print(reviews)
+        # print(encoded_string)
+        d = {'game': game,
+             'meta_encoded_string': meta_encoded_string,
+             'users_encoded_string': users_encoded_string,
+             'hotWordsIntersection': hotWordsIntersection}
+        s = json.dumps(d)
+        with open(os.path.join(os.getcwd(), "cache2", "reviews", original_url + ".json"), 'w+') as f:
+            f.write(s)
+        return render_template("game_detail.html", game=game, meta_wordcloud=meta_encoded_string,
+                               users_wordcloud=users_encoded_string, hotwords=hotWordsIntersection)
 
-    meta_reviews = []
-    users_reviews = []
-    for review in reviews:
-        if review["type"] == "meta":
-            meta_reviews.append(review)
-        else:
-            users_reviews.append(review)
-    meta_encoded_string, meta_words_frequency = generateWCfromReviews(meta_reviews, game)
-    users_encoded_string, users_words_frequency = generateWCfromReviews(users_reviews, game)
-    # print(encoded_string)
-    metaHotwords = sorted(meta_words_frequency, key=meta_words_frequency.get, reverse=True)[:5]
-    usersHotwords = sorted(users_words_frequency, key=users_words_frequency.get, reverse=True)[:5]
-    hotWordsInterestion = list(set(usersHotwords) & set(metaHotwords))
-    print(meta_words_frequency)
-    print(reviews)
-    # print(encoded_string)
-    return render_template("game_detail.html", game=game, meta_wordcloud=meta_encoded_string,
-                           users_wordcloud=users_encoded_string, hotwords=hotWordsInterestion)
 
+    else:
+        with open(os.path.join(os.getcwd(), "cache2", "reviews", original_url + ".json"), 'r') as f:
+            s = f.read()
+        j = json.loads(s)
+        print(j)
+        game = j["game"]
+        meta_encoded_string = j["meta_encoded_string"]
+        users_encoded_string = j["users_encoded_string"]
+        hotWordsIntersection = j["hotWordsIntersection"]
+        return render_template("game_detail.html", game=game, meta_wordcloud=meta_encoded_string,
+                               users_wordcloud=users_encoded_string, hotwords=hotWordsIntersection)
 
 
 if __name__ == '__main__':
